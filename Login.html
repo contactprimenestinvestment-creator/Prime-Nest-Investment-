@@ -14,7 +14,7 @@
 
   <main>
     <section>
-      <form id="loginForm">
+      <form id="login-form">
         <label for="email">Email:</label><br />
         <input type="email" id="email" name="email" required /><br /><br />
 
@@ -30,46 +30,44 @@
     <p>&copy; 2025 PrimeNest Investments</p>
   </footer>
 
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+  <!-- Firebase and Login Script -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
-// Firebase config
-const firebaseConfig = {
-  apiKey: "AIzaSyBhs5TEBrTOYj3iq9FaMbbBVBkfkuhncAg",
-  authDomain: "primenest-5156e.firebaseapp.com",
-  projectId: "primenest-5156e",
-  storageBucket: "primenest-5156e.appspot.com",
-  messagingSenderId: "1075380637024",
-  appId: "1:1075380637024:web:e415ad34d878a4a67f2205"
-};
+    const firebaseConfig = {
+      apiKey: "AIzaSyBhs5TEBrTOYj3iq9FaMbbBVBkfkuhncAg",
+      authDomain: "primenest-5156e.firebaseapp.com",
+      projectId: "primenest-5156e",
+      storageBucket: "primenest-5156e.appspot.com",
+      messagingSenderId: "1075380637024",
+      appId: "1:1075380637024:web:e415ad34d878a4a67f2205"
+    };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
-// Login form listener
-const loginForm = document.getElementById("login-form");
+    const loginForm = document.getElementById("login-form");
 
-loginForm.addEventListener("submit", (e) => {
-  e.preventDefault();
+    loginForm.addEventListener("submit", (e) => {
+      e.preventDefault();
 
-  const email = loginForm["email"].value;
-  const password = loginForm["password"].value;
+      const email = loginForm["email"].value;
+      const password = loginForm["password"].value;
 
-  signInWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      const user = userCredential.user;
-
-      // ✅ Check if admin or normal user
-      if (user.email === "admin@primenestinvestment.com") {
-        window.location.href = "admin-dashboard.html"; // Go to admin
-      } else {
-        window.location.href = "dashboard.html"; // Go to user dashboard
-      }
-    })
-    .catch((error) => {
-      alert("Login Failed: " + error.message);
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          if (user.email === "admin@primenestinvestment.com") {
+            window.location.href = "admin-dashboard.html";
+          } else {
+            window.location.href = "dashboard.html";
+          }
+        })
+        .catch((error) => {
+          alert("Login Failed: " + error.message);
+        });
     });
-}); type="module"></script>
+  </script>
 </body>
-    </html>
+</html>
