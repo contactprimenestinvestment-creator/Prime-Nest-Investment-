@@ -2,33 +2,75 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PrimeNest Investments</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Wallet Funding</title>
+  <script src="https://js.stripe.com/v3/"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 30px;
+      max-width: 400px;
+      margin: auto;
+      background-color: #f4f4f4;
+    }
+
+    input, button {
+      display: block;
+      width: 100%;
+      margin-top: 15px;
+      padding: 12px;
+      font-size: 16px;
+    }
+
+    button {
+      background-color: #0070f3;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #005bbb;
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <h1>PrimeNest Investments</h1>
-    <p>Building Wealth, One Nest at a Time</p>
-  </header>
+  <h2>Fund Your Wallet</h2>
+  <label>Enter Amount (USD)</label>
+  <input type="number" id="amount" placeholder="Amount in USD" />
 
-  <main>
-    <section>
-      <h2>Welcome to PrimeNest</h2>
-      <p>Your trusted platform for smart, secure, and rewarding investments.</p>
-    </section>
+  <button onclick="makePayment()">Pay with Card</button>
 
-    <section>
-      <h3>Get Started</h3>
-      <a href="signup.html">Sign Up</a> |
-      <a href="login.html">Login</a>
-    </section>
-  </main>
+  <script>
+    const stripe = Stripe("pk_test_51RtSSgRw1sWWowcCUdNv9Zna2XNOSqE44ay3km0FCLXhSO5DhS0QDtBb8UImw93GkPFiEWDJSKHqBEu4WzXnCOPA00Q657ahtZ");
 
-  <footer>
-    <p>&copy; 2025 PrimeNest Investments</p>
-  </footer>
+    async function makePayment() {
+      const amount = document.getElementById("amount").value;
+      if (!amount || amount <= 0) {
+        alert("Please enter a valid amount.");
+        return;
+      }
 
-  <script src="firebase.js" type="module"></script>
+      // Create a PaymentIntent via your server
+      const response = await fetch("https://your-backend-server.com/create-payment-intent", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ amount: amount * 100 }) // convert to cents
+      });
+
+      const paymentIntent = await response.json();
+
+      const { error } = await stripe.redirectToCheckout({
+        sessionId: paymentIntent.sessionId
+      });
+
+      if (error) {
+        console.error(error);
+        alert("Payment failed: " + error.message);
+      }
+    }
+  </script>
 </body>
 </html>
